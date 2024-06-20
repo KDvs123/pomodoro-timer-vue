@@ -91,10 +91,9 @@
       <div class="time-display">
         <p v-if="resting">Rest</p>
         <h2>{{ timeDisplay }}</h2>
-
       </div>
     </div>
-    <button @click="handleButtonClick()">{{buttonText}}</button>
+    <button @click="handleButtonClick()">{{ buttonText }}</button>
   </div>
 </template>
 
@@ -108,8 +107,8 @@ export default {
     const pomodoroDuration = 0.1 * 60;
 
     return {
-      restDuration:0.05*60, 
-      pomodoroDuration:pomodoroDuration,
+      restDuration: 0.05 * 60,
+      pomodoroDuration: pomodoroDuration,
       buttonText: "Start",
       currentSegment: 1,
       topRight: null,
@@ -119,11 +118,11 @@ export default {
       currentTimeInSeconds: pomodoroDuration,
       pathOptions: {
         easing: "linear",
-        duration: (pomodoroDuration  * 1000) +500,
+        duration: pomodoroDuration * 1000 + 500,
       },
       interval: null,
-      beepAudio:new Audio(beep),
-      resting:false
+      beepAudio: new Audio(beep),
+      resting: false,
     };
   },
   mounted: function () {
@@ -146,6 +145,7 @@ export default {
         this.buttonText = "Pause";
         this.animateBar();
       } else if (this.buttonText === "Pause") {
+        this.pauseBar();
         this.buttonText = "Resume";
       }
     },
@@ -158,36 +158,51 @@ export default {
           this.topRight.animate(0, this.onFinish);
           break;
         case 2:
-          this.bottomRight.animate(0 , this.onFinish);
+          this.bottomRight.animate(0, this.onFinish);
           break;
         case 3:
-          this.bottomLeft.animate(0 ,this.onFinish);
+          this.bottomLeft.animate(0, this.onFinish);
           break;
         case 4:
-          this.topLeft.animate(0 , this.onFinish);
+          this.topLeft.animate(0, this.onFinish);
           break;
       }
     },
-    onFinish(){
+    pauseBar() {
+      clearInterval(this.interval);
+      switch (this.currentSegment) {
+        case 1:
+          this.topRight.stop();
+          break;
+        case 2:
+          this.bottomRight.stop();
+          break;
+        case 3:
+          this.bottomLeft.stop();
+          break;
+        case 4:
+          this.topLeft.stop();
+          break;
+      }
+    },
+    onFinish() {
+      if (this.currentTimeInSeconds <= 0) {
         clearInterval(this.interval);
 
-        if(this.currentSegment < 4){
-            this.currentSegment+=1;
-
-        }else{
-            this.currentSegment=1;
+        if (this.currentSegment < 4) {
+          this.currentSegment += 1;
+        } else {
+          this.currentSegment = 1;
         }
         this.beepAudio.play();
 
-        setTimeout(()=>{
-        this.buttonText="Start";
-        this.currentTimeInSeconds = this.restDuration;
-        this.resting=true;
-
-        },4500)
-
-       
-    }
+        setTimeout(() => {
+          this.buttonText = "Start";
+          this.currentTimeInSeconds = this.restDuration;
+          this.resting = true;
+        }, 4500);
+      }
+    },
   },
   computed: {
     timeDisplay() {
@@ -249,8 +264,7 @@ h1 {
   left: 0;
 }
 
-h2{
-  
+h2 {
   font-size: 64px;
   color: #f85959;
 }
@@ -273,20 +287,20 @@ button:focus {
   outline: none;
 }
 
-.time-display{
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%,-50%);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
+.time-display {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
-p{
-    font-size: 48px;
-    line-height: 48px;
-    text-align: center;
-    color: #ff8080;
+p {
+  font-size: 48px;
+  line-height: 48px;
+  text-align: center;
+  color: #ff8080;
 }
 </style>
