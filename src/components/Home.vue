@@ -104,6 +104,7 @@ export default {
     const pomodoroDuration = 0.1 * 60;
 
     return {
+      pomodoroDuration:pomodoroDuration,
       buttonText: "Start",
       currentSegment: 1,
       topRight: null,
@@ -163,7 +164,22 @@ export default {
     },
     onFinish(){
         clearInterval(this.interval);
+
+        if(this.currentSegment < 4){
+            this.currentSegment+=1;
+
+        }else{
+            this.currentSegment=1;
+        }
         this.beepAudio.play();
+
+        setTimeout(()=>{
+             this.buttonText="Start";
+        this.currentTimeInSeconds = this.pomodoroDuration;
+
+        },4500)
+
+       
     }
   },
   computed: {
