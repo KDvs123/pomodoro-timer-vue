@@ -112,7 +112,7 @@ export default {
       currentTimeInSeconds: pomodoroDuration,
       pathOptions: {
         easing: "linear",
-        duration: pomodoroDuration * 1000,
+        duration: (pomodoroDuration  * 1000) +500,
       },
       interval: null,
     };
