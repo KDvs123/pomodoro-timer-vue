@@ -88,7 +88,11 @@
           d="M160.17,0A172,172,0,0,0,0,161.51"
         />
       </svg>
-      <h2>{{ timeDisplay }}</h2>
+      <div class="time-display">
+        <p v-if="resting">Rest</p>
+        <h2>{{ timeDisplay }}</h2>
+
+      </div>
     </div>
     <button @click="handleButtonClick()">{{buttonText}}</button>
   </div>
@@ -104,6 +108,7 @@ export default {
     const pomodoroDuration = 0.1 * 60;
 
     return {
+      restDuration:0.05*60, 
       pomodoroDuration:pomodoroDuration,
       buttonText: "Start",
       currentSegment: 1,
@@ -117,7 +122,8 @@ export default {
         duration: (pomodoroDuration  * 1000) +500,
       },
       interval: null,
-      beepAudio:new Audio(beep)
+      beepAudio:new Audio(beep),
+      resting:false
     };
   },
   mounted: function () {
@@ -174,8 +180,9 @@ export default {
         this.beepAudio.play();
 
         setTimeout(()=>{
-             this.buttonText="Start";
-        this.currentTimeInSeconds = this.pomodoroDuration;
+        this.buttonText="Start";
+        this.currentTimeInSeconds = this.restDuration;
+        this.resting=true;
 
         },4500)
 
@@ -242,11 +249,8 @@ h1 {
   left: 0;
 }
 
-h2 {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
+h2{
+  
   font-size: 64px;
   color: #f85959;
 }
@@ -267,5 +271,22 @@ button {
 
 button:focus {
   outline: none;
+}
+
+.time-display{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+p{
+    font-size: 48px;
+    line-height: 48px;
+    text-align: center;
+    color: #ff8080;
 }
 </style>
