@@ -88,41 +88,90 @@
           d="M160.17,0A172,172,0,0,0,0,161.51"
         />
       </svg>
-      <h2>{{pomodoroDuration}}</h2>
+      <h2>{{ timeDisplay }}</h2>
     </div>
-    <button>Start</button>
+    <button @click="handleButtonClick()">{{buttonText}}</button>
   </div>
 </template>
 
 <script>
-import ProgressBar from 'progressbar.js';
+import ProgressBar from "progressbar.js";
 
 export default {
   name: "HomeVue",
-  data:()=>{
-    const  pomodoroDuration= 25;
-        return {
-           
-            currentTimeInSeconds:pomodoroDuration *60
-        }
+  data: () => {
+    const pomodoroDuration = 0.1 * 60;
+
+    return {
+      buttonText: "Start",
+      currentSegment: 1,
+      topRight: null,
+      bottomRight: null,
+      topLeft: null,
+      bottomLeft: null,
+      currentTimeInSeconds: pomodoroDuration,
+      pathOptions: {
+        easing: "linear",
+        duration: pomodoroDuration * 1000,
+      },
+      interval: null,
+    };
   },
-  mounted:function(){
-    const topRight=new ProgressBar.Path('#top-right',{
-        easing:'linear',
-        duration: 1 *60 *1000,
+  mounted: function () {
+    this.topRight = new ProgressBar.Path("#top-right", this.pathOptions);
+    this.topRight.set(1);
 
-    });
-    topRight.set(1);
-    topRight.animate(0);
+    this.bottomRight = new ProgressBar.Path("#bottom-right", this.pathOptions);
+    this.bottomRight.set(1);
+
+    this.bottomLeft = new ProgressBar.Path("#bottom-left", this.pathOptions);
+    this.bottomLeft.set(1);
+
+    this.topLeft = new ProgressBar.Path("#top-left", this.pathOptions);
+    this.topLeft.set(1);
   },
 
-  computed:{
-    timeDisplay(){
-        const minutes=parseInt(this.currentTimeInSeconds/60);
-
-
+  methods: {
+    handleButtonClick() {
+      if (this.buttonText === "Start" || this.buttonText === "Resume") {
+        this.buttonText = "Pause";
+        this.animateBar();
+      } else if (this.buttonText === "Pause") {
+        this.buttonText = "Resume";
+      }
+    },
+    animateBar() {
+      this.interval = setInterval(() => {
+        this.currentTimeInSeconds -= 1;
+      }, 1000);
+      switch (this.currentSegment) {
+        case 1:
+          this.topRight.animate(0, this.onFinish);
+          break;
+        case 2:
+          this.bottomRight.animate(0 , this.onFinish);
+          break;
+        case 3:
+          this.bottomLeft.animate(0 ,this.onFinish);
+          break;
+        case 4:
+          this.topLeft.animate(0 , this.onFinish);
+          break;
+      }
+    },
+    onFinish(){
+        clearInterval(this.interval);
     }
-  }
+  },
+  computed: {
+    timeDisplay() {
+      const minutes = parseInt(this.currentTimeInSeconds / 60);
+      const seconds = this.currentTimeInSeconds % 60;
+      const paddedMinutes = ("0" + minutes).slice(-2);
+      const paddedSeconds = ("0" + seconds).slice(-2);
+      return `${paddedMinutes}:${paddedSeconds}`;
+    },
+  },
 };
 </script>
 
@@ -151,39 +200,37 @@ h1 {
   height: 330px;
 }
 
-#first-segment{
-    position: absolute;
-    top: 0;
-    right: 0;
+#first-segment {
+  position: absolute;
+  top: 0;
+  right: 0;
 }
-#second-segment{
-    position: absolute;
-    bottom: 0;
-    right: 0;
-}
-
-#third-segment{
-    position: absolute;
-    bottom: 0;
-    left: 0;
+#second-segment {
+  position: absolute;
+  bottom: 0;
+  right: 0;
 }
 
-
-#fourth-segment{
-    position: absolute;
-    top: 0;
-    left: 0;
+#third-segment {
+  position: absolute;
+  bottom: 0;
+  left: 0;
 }
 
-h2{
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%,-50%);
-    font-size: 64px;
-    color:#f85959;
+#fourth-segment {
+  position: absolute;
+  top: 0;
+  left: 0;
 }
 
+h2 {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 64px;
+  color: #f85959;
+}
 
 button {
   margin-top: 50px;
@@ -202,5 +249,4 @@ button {
 button:focus {
   outline: none;
 }
-
 </style>
