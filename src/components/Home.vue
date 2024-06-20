@@ -96,6 +96,7 @@
 
 <script>
 import ProgressBar from "progressbar.js";
+import beep from "../assets/beep.mp3";
 
 export default {
   name: "HomeVue",
@@ -115,6 +116,7 @@ export default {
         duration: (pomodoroDuration  * 1000) +500,
       },
       interval: null,
+      beepAudio:new Audio(beep)
     };
   },
   mounted: function () {
@@ -161,6 +163,7 @@ export default {
     },
     onFinish(){
         clearInterval(this.interval);
+        this.beepAudio.play();
     }
   },
   computed: {
