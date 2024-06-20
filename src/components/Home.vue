@@ -88,15 +88,41 @@
           d="M160.17,0A172,172,0,0,0,0,161.51"
         />
       </svg>
-      <h2>25.00</h2>
+      <h2>{{pomodoroDuration}}</h2>
     </div>
     <button>Start</button>
   </div>
 </template>
 
 <script>
+import ProgressBar from 'progressbar.js';
+
 export default {
   name: "HomeVue",
+  data:()=>{
+    const  pomodoroDuration= 25;
+        return {
+           
+            currentTimeInSeconds:pomodoroDuration *60
+        }
+  },
+  mounted:function(){
+    const topRight=new ProgressBar.Path('#top-right',{
+        easing:'linear',
+        duration: 1 *60 *1000,
+
+    });
+    topRight.set(1);
+    topRight.animate(0);
+  },
+
+  computed:{
+    timeDisplay(){
+        const minutes=parseInt(this.currentTimeInSeconds/60);
+
+
+    }
+  }
 };
 </script>
 
